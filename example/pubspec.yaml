@@ -1,0 +1,12 @@
+name: cached_value_example
+description: Example for cacjed value
+version: 0.0.1
+homepage: https://github.com/renancaraujo/cached_value
+publish_to: none
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  cached_value:
+    path: ../
