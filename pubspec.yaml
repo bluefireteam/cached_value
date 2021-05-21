@@ -1,6 +1,6 @@
 name: cached_value
 description: A simple way to cache values that result from rather expensive operations.
-version: 0.1.0
+version: 0.2.0
 repository: https://github.com/renancaraujo/cached_value
 
 environment:
