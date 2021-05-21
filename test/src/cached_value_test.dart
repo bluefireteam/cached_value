@@ -1,23 +1,22 @@
-import 'package:cached_value/src/cached_value.dart';
-import 'package:cached_value/src/computed_cached_value.dart';
-import 'package:cached_value/src/simple_cached_value.dart';
+import 'package:cached_value/cached_value.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('Simple creates a simple cached value', () {
-    final cachedValue = CachedValue.simple(() => 2);
-    expect(cachedValue, TypeMatcher<SimpleCachedValue>());
-  });
-  test('Main constructor creates a simple cached value', () {
+  test('Constructor creates a simple cached value', () {
     final cachedValue = CachedValue(() => 2);
     expect(cachedValue, TypeMatcher<SimpleCachedValue>());
   });
-  test('dependent creates a computed cached value', () {
+
+  test('with dependency', () {
     final dependency = 2;
-    final cachedValue = CachedValue.dependent(
-      on: () => dependency,
-      compute: () => 4 / dependency,
-    );
-    expect(cachedValue, TypeMatcher<ComputedCachedValue>());
+    final cachedValue =
+        CachedValue(() => 4 / dependency).withDependency(() => dependency);
+    expect(cachedValue, TypeMatcher<DependentCachedValue>());
+  });
+
+  test('with ttl', () {
+    final cachedValue =
+        CachedValue(() => 2).withTimeToLive(lifetime: Duration(seconds: 12));
+    expect(cachedValue, TypeMatcher<TimeToLiveCachedValue>());
   });
 }
