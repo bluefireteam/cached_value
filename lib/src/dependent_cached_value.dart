@@ -98,8 +98,9 @@ extension DependentExtension<CacheContentType>
   /// originalValue = 6;
   /// print(factorialCache.value); // 720
   /// ```
-  CachedValue<CacheContentType> withDependency<DependencyType>(
+  DependentCachedValue<CacheContentType, DependencyType>
+      withDependency<DependencyType>(
     ComputeCacheDependency<DependencyType> on,
   ) =>
-      DependentCachedValue._(this, on);
+          DependentCachedValue._(this, on);
 }
