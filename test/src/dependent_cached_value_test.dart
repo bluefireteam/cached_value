@@ -1,12 +1,13 @@
-import 'package:cached_value/src/cached_value.dart';
+import 'package:cached_value/cached_value.dart';
 import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 
 class TestBed {
   String name = "Elon Bezos"; // Married name
-  late final firstNameCache = CachedValue.dependent(
-    on: () => name,
-    compute: () => name.split(" ").first,
+  late final firstNameCache = CachedValue(
+    () => name.split(" ").first,
+  ).withDependency(
+    () => name,
   );
 }
 

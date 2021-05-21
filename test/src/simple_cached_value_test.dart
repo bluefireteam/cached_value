@@ -1,5 +1,5 @@
-import 'package:meta/meta.dart' show isTest;
 import 'package:cached_value/src/cached_value.dart';
+import 'package:meta/meta.dart' show isTest;
 import 'package:test/test.dart';
 
 class TestBed {

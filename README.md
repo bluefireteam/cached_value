@@ -21,9 +21,11 @@ Find the most recent version on [pub](https://pub.dev/packages/cached_value).
 
 ## Usage
 
-There are to types of cache to choose: simple and dependent.
+A cache can be created from a simple manually controlled cache and composed with automatic 
+functionalities. Such as dependencies and time to live.
 
-### Simple cache
+
+### Creating a cache:
 
 A simple cache is only invalidated manually.
 
@@ -34,7 +36,6 @@ A simple cache is only invalidated manually.
   }
 
   int originalValue = 1;
-  // One can also use CachedValue.simple
   final factorialCache = CachedValue(() => factorial(originalValue));
   print(factorialCache.value); // 1
 
@@ -50,8 +51,8 @@ A simple cache is only invalidated manually.
   print(factorialCache.value); // 720
   print(factorialCache.isValid); // true
 ```
-
-It can be refreshed manually via the `refresh` method:
+Accessing `value` when the cache is invalid refreshes the cache. It can be refreshed manually via 
+the `refresh` method:
 
 ```dart
   // ...
@@ -61,7 +62,28 @@ It can be refreshed manually via the `refresh` method:
   print(factorialCache.value); // 12
 ```
 
-### Dependent cache
+## Composing a cache
+
+A cache can be composed with more resources via a declarative API. By doing that, it is possible to 
+add TTL and dependency without diverging from the original behavior of a cache.
+
+Example:
+```dart
+  int factorial(int n) {
+    if (n < 0) throw ('Negative numbers are not allowed.');
+    return n <= 1 ? 1 : n * factorial(n - 1);
+  }
+  
+  int originalValue = 1;
+  final fancyFactorialCache = CachedValue(
+      () => factorial(originalValue),
+  ).withDependency(() => originalValue) // Add dependency
+  .withTimeToLive(lifetime: Duration(seconds: 4)); // Add TTL
+```
+
+You can even create your behavior yourself by extending `SingleChildCachedValue`.
+
+### Adding dependency
 
 A dependent cache is marked as invalid if its dependency value has changed.
 
@@ -72,10 +94,9 @@ A dependent cache is marked as invalid if its dependency value has changed.
   }
   
   int originalValue = 1;
-  final factorialCache = CachedValue.dependent(
-    on: () => originalValue,
-    compute: () => factorial(originalValue),
-  );
+  final factorialCache = CachedValue(
+      () => factorial(originalValue),
+  ).withDependency(() => originalValue);
   print(factorialCache.value); // 1
   print(factorialCache.isValid); // true
   
@@ -87,16 +108,40 @@ A dependent cache is marked as invalid if its dependency value has changed.
   print(factorialCache.isValid); // true
 ```
 
-The dependency callback `on` is called on every value access. So it is recommended to keep it as declarative as possible.
+⚠️Important: 
+The dependency callback is called on every value access. So it is recommended to keep it as declarative as possible.
 
 ```dart
 // Avoid this:
-final someCache = CachedValue.dependent(
-  on: () => someExpensiveOperation(originalValue),
-  compute: () => someCacheComputation(originalValue),
-);
+final someCache = CachedValue(
+  // ...
+).withDependency(() => someExpensiveOperation(originalValue));
+```
 
+### Adding time to live
 
+A cache can be automatically marked as invalid some time after a refresh.
+
+```dart
+    int factorial(int n) {
+        if (n < 0) throw ('Negative numbers are not allowed.');
+        return n <= 1 ? 1 : n * factorial(n - 1);
+    }
+  
+    int originalValue = 1;
+    final factorialCache = CachedValue(
+      () => factorial(originalValue),
+    ).withTimeToLive(
+      lifetime: Duration(seconds: 3),
+    );
+    
+    originalValue = 6;
+    
+    print(factorialCache.value); // 1
+    
+    await Future.delayed(Duration(seconds: 3));
+    
+    print(factorialCache.value); // 720
 ```
 
 ## More docs
@@ -153,11 +198,9 @@ class BlurredRenderObject extends RenderObject {
   }
 
   // Add cache:
-  late final paintCache = CachedValue.dependent(
-    on: () => blurSigma,
-    compute: () =>
-        Paint()..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma),
-  );
+  late final paintCache = CachedValue(
+     () => Paint()..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma),
+  ).withDependency(() => blurSigma);
 
   // ...
 
