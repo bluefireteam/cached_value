@@ -1,4 +1,3 @@
-
 import 'dependent_cached_value.dart';
 import 'simple_cached_value.dart';
 import 'single_child_cached_value.dart';
@@ -24,10 +23,10 @@ typedef ComputeCacheCallback<CacheContentType> = CacheContentType Function();
 /// creates a cache that can only be marked as invalid or refresh manually.
 ///
 /// To add automatic rules on invalidating and refreshing of a cache, see:
-/// - [DependentCachedValue] that creates a cache that is updated if a
+/// - [DependentCachedValue] creates a cache that is updated if a
 ///   dependency changes.
-/// - [TimeToLiveCachedValue] that creates a cache that is marked invalid after
-/// some time after a refresh.
+/// - [TimeToLiveCachedValue] creates a cache that is invalidated after
+/// some given [Duration].
 abstract class CachedValue<CacheContentType> {
   /// Access the current cache value.
   ///
@@ -36,12 +35,14 @@ abstract class CachedValue<CacheContentType> {
 
   /// Check the current state of the cache.
   ///
-  /// On a simple [CachedValue] (or [SimpleCachedValue]) caches it only checks
-  /// if [invalidate] has been
-  /// called.
+  /// On a simple [SimpleCachedValue] caches it only checks
+  /// if [invalidate] has been called.
   ///
-  /// On [DependentCachedValue] caches it also checks if the result of the
-  /// dependency callback has changed.
+  /// On a [DependentCachedValue] checks if the result of the dependency
+  /// callback has changed and its child is valid.
+  ///
+  /// on [TimeToLiveCachedValue] checks if its ligetime has been spent and if
+  /// its child is valid.
   bool get isValid;
 
   /// Marks the cache as invalid.
@@ -100,8 +101,10 @@ abstract class CachedValue<CacheContentType> {
   /// ```
   ///
   /// See also:
-  /// - [DependentCachedValue] that creates a cache that is updated if a
+  /// - [DependentCachedValue] creates a cache that is updated if a
   ///   dependency changes.
+  /// - [TimeToLiveCachedValue] creates a cache that is invalidated after
+  /// some given [Duration].
   factory CachedValue(ComputeCacheCallback<CacheContentType> callback) {
     return SimpleCachedValue<CacheContentType>(callback);
   }

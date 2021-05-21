@@ -88,5 +88,3 @@ void main() {
     expect(validAfterRefresh, isTrue);
   });
 }
-
-

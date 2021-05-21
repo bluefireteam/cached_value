@@ -3,7 +3,6 @@ import 'dependent_cached_value.dart';
 import 'single_child_cached_value.dart';
 import 'time_to_live_cached_value.dart';
 
-
 /// A [CachedValue] that holds the last result of the computation callback since
 /// the start of the last time the cache was refresh via [refresh].
 ///
@@ -35,7 +34,6 @@ class SimpleCachedValue<CacheContentType>
   bool get isValid => _isValid;
 
   final ComputeCacheCallback<CacheContentType> _computeCache;
-
 
   /// Creates a [SimpleCachedValue]. It is recommended to use
   /// [new CachedValue] instead of this constructor.

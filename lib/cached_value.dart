@@ -1,3 +1,4 @@
+/// A simple way to cache values that result from rather expensive operations.
 library cached_value;
 
 export 'src/cached_value.dart';

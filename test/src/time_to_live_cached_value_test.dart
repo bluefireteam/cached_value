@@ -86,14 +86,13 @@ void main() {
     });
     test("prevent duplicated time to live", () {
       expect(
-            () =>
-            CachedValue(() => "lolo")
-                .withTimeToLive(lifetime: Duration(seconds: 1))
-                .withTimeToLive(lifetime: Duration(seconds: 1)),
+        () => CachedValue(() => "lolo")
+            .withTimeToLive(lifetime: Duration(seconds: 1))
+            .withTimeToLive(lifetime: Duration(seconds: 1)),
         throwsA(
           predicate(
-                (e) =>
-            e is AssertionError &&
+            (e) =>
+                e is AssertionError &&
                 e.message ==
                     """
 There is a declaration of a cached value time to live specified more than once""",
@@ -103,10 +102,10 @@ There is a declaration of a cached value time to live specified more than once""
     });
     test("pile up with dependency", () async {
       var numberOfLifeProblems = 10;
-      final realNumberOfLifeProblemsAMinuteAgo = CachedValue(() =>
-      numberOfLifeProblems * 2)
-          .withDependency(() => numberOfLifeProblems)
-          .withTimeToLive(lifetime: Duration(seconds: 3));
+      final realNumberOfLifeProblemsAMinuteAgo =
+          CachedValue(() => numberOfLifeProblems * 2)
+              .withDependency(() => numberOfLifeProblems)
+              .withTimeToLive(lifetime: Duration(seconds: 3));
 
       final validAfterDeclaration = realNumberOfLifeProblemsAMinuteAgo.isValid;
       final valueAfterDeclaration = realNumberOfLifeProblemsAMinuteAgo.value;

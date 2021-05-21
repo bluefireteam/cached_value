@@ -1,4 +1,3 @@
-
 import 'package:meta/meta.dart';
 
 import '../cached_value.dart';
@@ -17,7 +16,6 @@ import '../cached_value.dart';
 /// - Avoid and verify for conflict with other cache types.
 abstract class SingleChildCachedValue<CacheContentType>
     implements CachedValue<CacheContentType> {
-
   /// A [CachedValue] in which this cache wraps.
   final CachedValue<CacheContentType> child;
 

@@ -13,7 +13,7 @@ typedef ComputeCacheDependency<DependencyType> = DependencyType Function();
 /// It  holds the last result of the computation callback since the last change
 /// on the result of the dependency callback.
 ///
-/// This cache type will be considered invalid if the overall returned value of
+/// This cache will be considered invalid if the overall returned value of
 /// the dependency callback changes since the last refresh.
 ///
 /// Besides dependency change, this cache can also be manually updated on
@@ -49,7 +49,7 @@ class DependentCachedValue<CacheContentType, DependencyType>
       : super(child);
 
   /// {@template dependent_refresh}
-  /// Calls refresh on its [child] and updates the local cache of dependency.
+  /// Calls refresh on its child and updates the local cache of dependency.
   /// {@endtemplate}
   ///
   /// {@macro main_refresh}
