@@ -1,7 +1,7 @@
 name: cached_value
 description: A simple way to cache values that result from rather expensive operations.
 version: 0.2.0
-repository: https://github.com/renancaraujo/cached_value
+repository: https://github.com/bluefireteam/cached_value
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
