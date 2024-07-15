@@ -3,9 +3,9 @@ import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 
 class TestBed {
-  String name = "Elon Bezos"; // Married name
+  String name = 'Elon Bezos'; // Married name
   late final firstNameCache = CachedValue(
-    () => name.split(" ").first,
+    () => name.split(' ').first,
   ).withDependency(
     () => name,
   );
@@ -23,12 +23,12 @@ void testComputedCachedValue(
 
 void main() {
   testComputedCachedValue(
-    "cached value should be computed and cached",
+    'cached value should be computed and cached',
     (testBed) {
       final cachedValueAtStart = testBed.firstNameCache.value;
 
       // update value
-      testBed.name = "Joseph climber";
+      testBed.name = 'Joseph climber';
       final cachedValueAfterUpdate = testBed.firstNameCache.value;
 
       expect(cachedValueAtStart, equals('Elon'));
@@ -43,7 +43,7 @@ void main() {
       final validAfterFirstAccess = testBed.firstNameCache.isValid;
 
       // update value
-      testBed.name = "Joseph climber";
+      testBed.name = 'Joseph climber';
       final validAfterUpdate = testBed.firstNameCache.isValid;
       final cachedValueAfterUpdate = testBed.firstNameCache.value;
       final validAfterUpdateAccess = testBed.firstNameCache.isValid;
@@ -88,7 +88,7 @@ void main() {
     final validAfterFirstAccess = testBed.firstNameCache.isValid;
 
     // update value
-    testBed.name = "Joseph climber";
+    testBed.name = 'Joseph climber';
     final validAfterUpdate = testBed.firstNameCache.isValid;
 
     // refresh

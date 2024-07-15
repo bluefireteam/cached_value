@@ -1,7 +1,6 @@
+import 'package:cached_value/src/cached_value.dart';
+import 'package:cached_value/src/single_child_cached_value.dart';
 import 'package:collection/collection.dart';
-
-import 'cached_value.dart';
-import 'single_child_cached_value.dart';
 
 /// A signature for functions that provides dependency of a
 /// [DependentCachedValue].
@@ -28,6 +27,10 @@ typedef ComputeCacheDependency<DependencyType> = DependencyType Function();
 /// It can be created via `CachedValue.withDependency`
 class DependentCachedValue<CacheContentType, DependencyType>
     extends SingleChildCachedValue<CacheContentType> {
+  DependentCachedValue._(
+    CachedValue<CacheContentType> child,
+    this._getDependency,
+  ) : super(child);
   late DependencyType _dependencyCache = _getDependency();
 
   @override
@@ -43,10 +46,6 @@ class DependentCachedValue<CacheContentType, DependencyType>
       super.isValid && _equalityCompare(_dependencyCache, _getDependency());
 
   final ComputeCacheDependency<DependencyType> _getDependency;
-
-  DependentCachedValue._(
-      CachedValue<CacheContentType> child, this._getDependency)
-      : super(child);
 
   /// {@template dependent_refresh}
   /// Calls refresh on its child and updates the local cache of dependency.
