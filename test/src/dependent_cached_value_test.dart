@@ -1,55 +1,68 @@
 import 'package:cached_value/cached_value.dart';
-import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 
 class TestBed {
-  String name = "Elon Bezos"; // Married name
-  late final firstNameCache = CachedValue(
-    () => name.split(" ").first,
+  String name1 = 'Elon Musk';
+  String name2 = 'Jeff Bezos';
+  late final marriedNameCache = CachedValue(
+    () => '${name1.split(' ').first} ${name2.split(' ').last}',
   ).withDependency(
-    () => name,
+    () sync* {
+      yield name1;
+      yield name2;
+    },
   );
-}
-
-@isTest
-void testComputedCachedValue(
-  String description,
-  dynamic Function(TestBed testBed) body,
-) {
-  final testBed = TestBed();
-
-  test(description, () => body(testBed));
 }
 
 void main() {
-  testComputedCachedValue(
-    "cached value should be computed and cached",
-    (testBed) {
-      final cachedValueAtStart = testBed.firstNameCache.value;
+  late TestBed testBed;
+
+  setUp(() {
+    testBed = TestBed();
+  });
+
+  test(
+    'cached value should be computed and cached',
+    () {
+      final cachedValueAtStart = testBed.marriedNameCache.value;
 
       // update value
-      testBed.name = "Joseph climber";
-      final cachedValueAfterUpdate = testBed.firstNameCache.value;
+      testBed.name1 = 'Mark Zuckerberg';
+      final cachedValueAfterUpdate = testBed.marriedNameCache.value;
 
-      expect(cachedValueAtStart, equals('Elon'));
-      expect(cachedValueAfterUpdate, equals('Joseph'));
+      expect(cachedValueAtStart, equals('Elon Bezos'));
+      expect(cachedValueAfterUpdate, equals('Mark Bezos'));
     },
   );
 
-  testComputedCachedValue(
-    'dependency change should update cached value on next access',
-    (testBed) {
-      final cachedValueAtStart = testBed.firstNameCache.value;
-      final validAfterFirstAccess = testBed.firstNameCache.isValid;
+  test(
+    'cached value with multiple dependencies should be computed and cached',
+    () {
+      final cachedValueAtStart = testBed.marriedNameCache.value;
 
       // update value
-      testBed.name = "Joseph climber";
-      final validAfterUpdate = testBed.firstNameCache.isValid;
-      final cachedValueAfterUpdate = testBed.firstNameCache.value;
-      final validAfterUpdateAccess = testBed.firstNameCache.isValid;
+      testBed.name2 = 'Mark Zuckerberg';
+      final cachedValueAfterUpdate = testBed.marriedNameCache.value;
 
-      expect(cachedValueAtStart, equals('Elon'));
-      expect(cachedValueAfterUpdate, equals('Joseph'));
+      expect(cachedValueAtStart, equals('Elon Bezos'));
+      expect(cachedValueAfterUpdate, equals('Elon Zuckerberg'));
+    },
+  );
+
+  test(
+    'dependency change should update cached value on next access',
+    () {
+      final cachedValueAtStart = testBed.marriedNameCache.value;
+      final validAfterFirstAccess = testBed.marriedNameCache.isValid;
+
+      // update value
+      testBed.name1 = 'Mark Zuckerberg';
+      final validAfterUpdate = testBed.marriedNameCache.isValid;
+      final cachedValueAfterUpdate = testBed.marriedNameCache.value;
+      final validAfterUpdateAccess = testBed.marriedNameCache.isValid;
+
+      expect(cachedValueAtStart, equals('Elon Bezos'));
+      expect(cachedValueAfterUpdate, equals('Mark Bezos'));
 
       expect(validAfterFirstAccess, isTrue);
       expect(validAfterUpdate, isFalse);
@@ -57,23 +70,23 @@ void main() {
     },
   );
 
-  testComputedCachedValue(
+  test(
     'invalidate should update cached value on next access',
-    (testBed) {
+    () {
       // first access
-      final cachedValueStart = testBed.firstNameCache.value;
-      final validAfterFirstAccess = testBed.firstNameCache.isValid;
+      final cachedValueStart = testBed.marriedNameCache.value;
+      final validAfterFirstAccess = testBed.marriedNameCache.isValid;
 
       // invalidate
-      testBed.firstNameCache.invalidate();
-      final validAfterInvalidate = testBed.firstNameCache.isValid;
+      testBed.marriedNameCache.invalidate();
+      final validAfterInvalidate = testBed.marriedNameCache.isValid;
 
       // second access
-      final cachedValueAfterInvalidate = testBed.firstNameCache.value;
-      final validAfterInvalidateAccess = testBed.firstNameCache.isValid;
+      final cachedValueAfterInvalidate = testBed.marriedNameCache.value;
+      final validAfterInvalidateAccess = testBed.marriedNameCache.isValid;
 
-      expect(cachedValueStart, equals('Elon'));
-      expect(cachedValueAfterInvalidate, equals('Elon'));
+      expect(cachedValueStart, equals('Elon Bezos'));
+      expect(cachedValueAfterInvalidate, equals('Elon Bezos'));
 
       expect(validAfterFirstAccess, isTrue);
       expect(validAfterInvalidate, isFalse);
@@ -81,25 +94,24 @@ void main() {
     },
   );
 
-  testComputedCachedValue('refresh should update cached value immediately',
-      (testBed) {
+  test('refresh should update cached value immediately', () {
     // first access
-    final cachedValueStart = testBed.firstNameCache.value;
-    final validAfterFirstAccess = testBed.firstNameCache.isValid;
+    final cachedValueStart = testBed.marriedNameCache.value;
+    final validAfterFirstAccess = testBed.marriedNameCache.isValid;
 
     // update value
-    testBed.name = "Joseph climber";
-    final validAfterUpdate = testBed.firstNameCache.isValid;
+    testBed.name1 = 'Mark Zuckerberg';
+    final validAfterUpdate = testBed.marriedNameCache.isValid;
 
     // refresh
-    testBed.firstNameCache.refresh();
-    final validAfterRefresh = testBed.firstNameCache.isValid;
+    testBed.marriedNameCache.refresh();
+    final validAfterRefresh = testBed.marriedNameCache.isValid;
 
     // second access
-    final cachedValueAfterUpdate = testBed.firstNameCache.value;
+    final cachedValueAfterUpdate = testBed.marriedNameCache.value;
 
-    expect(cachedValueStart, equals('Elon'));
-    expect(cachedValueAfterUpdate, equals('Joseph'));
+    expect(cachedValueStart, equals('Elon Bezos'));
+    expect(cachedValueAfterUpdate, equals('Mark Bezos'));
 
     expect(validAfterFirstAccess, isTrue);
     expect(validAfterUpdate, isFalse);

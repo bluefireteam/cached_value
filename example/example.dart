@@ -1,7 +1,9 @@
+// ignore_for_file: avoid_print
+
 import 'package:cached_value/cached_value.dart';
 
 int factorial(int n) {
-  if (n < 0) throw ('Negative numbers are not allowed.');
+  if (n < 0) throw Exception('Negative numbers are not allowed.');
   return n <= 1 ? 1 : n * factorial(n - 1);
 }
 
@@ -11,9 +13,9 @@ void main() {
 }
 
 void withDependency() {
-  print("with dependency");
+  print('with dependency');
 
-  int originalValue = 1;
+  var originalValue = 1;
   final factorialCache = CachedValue(
     () => factorial(originalValue),
   ).withDependency(
@@ -29,21 +31,21 @@ void withDependency() {
   print(factorialCache.value); // 720
 }
 
-void withTimeToLive() async {
-  print("with TTL:");
+Future<void> withTimeToLive() async {
+  print('with TTL:');
 
-  int originalValue = 1;
+  var originalValue = 1;
   final factorialCache = CachedValue(
     () => factorial(originalValue),
   ).withTimeToLive(
-    lifetime: Duration(seconds: 3),
+    lifetime: const Duration(seconds: 3),
   );
 
   originalValue = 6;
 
   print(factorialCache.value); // 1
 
-  await Future.delayed(Duration(seconds: 3));
+  await Future<void>.delayed(const Duration(seconds: 3));
 
   print(factorialCache.value); // 720
 }

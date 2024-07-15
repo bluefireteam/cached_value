@@ -1,7 +1,7 @@
-import 'dependent_cached_value.dart';
-import 'simple_cached_value.dart';
-import 'single_child_cached_value.dart';
-import 'time_to_live_cached_value.dart';
+import 'package:cached_value/src/dependent_cached_value.dart';
+import 'package:cached_value/src/simple_cached_value.dart';
+import 'package:cached_value/src/single_child_cached_value.dart';
+import 'package:cached_value/src/time_to_live_cached_value.dart';
 
 /// A signature for functions that computes the value to be cached.
 ///
@@ -28,6 +28,40 @@ typedef ComputeCacheCallback<CacheContentType> = CacheContentType Function();
 /// - [TimeToLiveCachedValue] creates a cache that is invalidated after
 /// some given [Duration].
 abstract class CachedValue<CacheContentType> {
+  /// Creates a [CachedValue] that is only manually invalidated.
+  ///
+  /// The implementation type for the returned value is [SimpleCachedValue].
+  ///
+  /// {@macro simple_cache}
+  ///
+  /// Usage example:
+  /// ```dart
+  /// int factorial(int n) {
+  ///   if (n < 0) throw ('Negative numbers are not allowed.');
+  ///   return n <= 1 ? 1 : n * factorial(n - 1);
+  /// }
+  ///
+  /// int originalValue =1;
+  /// final factorialCache = CachedValue(() => factorial(originalValue));
+  /// print(factorialCache.value); // 1
+  ///
+  /// originalValue = 6;
+  ///
+  /// print(factorialCache.value); // 1
+  /// factorialCache.invalidate();
+  ///
+  /// print(factorialCache.value); // 720
+  /// ```
+  ///
+  /// See also:
+  /// - [DependentCachedValue] creates a cache that is updated if a
+  ///   dependency changes.
+  /// - [TimeToLiveCachedValue] creates a cache that is invalidated after
+  /// some given [Duration].
+  factory CachedValue(ComputeCacheCallback<CacheContentType> callback) {
+    return SimpleCachedValue<CacheContentType>(callback);
+  }
+
   /// Access the current cache value.
   ///
   /// If the cache is considered invalid, calls [refresh].
@@ -74,58 +108,4 @@ abstract class CachedValue<CacheContentType> {
   /// The returned value should be the new cache value.
   /// {@endtemplate}
   CacheContentType refresh();
-
-  /// Creates a [CachedValue] that is only manually invalidated.
-  ///
-  /// The implementation type for the returned value is [SimpleCachedValue].
-  ///
-  /// {@macro simple_cache}
-  ///
-  /// Usage example:
-  /// ```dart
-  /// int factorial(int n) {
-  ///   if (n < 0) throw ('Negative numbers are not allowed.');
-  ///   return n <= 1 ? 1 : n * factorial(n - 1);
-  /// }
-  ///
-  /// int originalValue =1;
-  /// final factorialCache = CachedValue(() => factorial(originalValue));
-  /// print(factorialCache.value); // 1
-  ///
-  /// originalValue = 6;
-  ///
-  /// print(factorialCache.value); // 1
-  /// factorialCache.invalidate();
-  ///
-  /// print(factorialCache.value); // 720
-  /// ```
-  ///
-  /// See also:
-  /// - [DependentCachedValue] creates a cache that is updated if a
-  ///   dependency changes.
-  /// - [TimeToLiveCachedValue] creates a cache that is invalidated after
-  /// some given [Duration].
-  factory CachedValue(ComputeCacheCallback<CacheContentType> callback) {
-    return SimpleCachedValue<CacheContentType>(callback);
-  }
-
-  /// Creates a [CachedValue] that is only manually invalidated.
-  ///
-  /// Use [new CachedValue] instead.
-  @Deprecated('Use the constructor instead')
-  static SimpleCachedValue<CacheContentType> simple<CacheContentType>(
-      ComputeCacheCallback<CacheContentType> callback) {
-    return SimpleCachedValue<CacheContentType>(callback);
-  }
-
-  /// Creates a [CachedValue] that its validity is defined by a dependency.
-  ///
-  /// Use `CachedValue.withDependency` instead.
-  @Deprecated('Use "withDependency" instead')
-  static DependentCachedValue<A, B> dependent<A, B>({
-    required ComputeCacheDependency<B> on,
-    required ComputeCacheCallback<A> compute,
-  }) {
-    return CachedValue<A>(compute).withDependency<B>(on);
-  }
 }

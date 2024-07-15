@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'cached_value.dart';
-import 'single_child_cached_value.dart';
+import 'package:cached_value/src/cached_value.dart';
+import 'package:cached_value/src/single_child_cached_value.dart';
 
 /// A [CachedValue] that is invalidated some time after a refresh.
 ///
@@ -21,16 +21,16 @@ import 'single_child_cached_value.dart';
 /// It can be created via `CachedValue.withTimeToLive`
 class TimeToLiveCachedValue<CacheContentType>
     extends SingleChildCachedValue<CacheContentType> {
+  TimeToLiveCachedValue._(CachedValue<CacheContentType> child, this.lifeTime)
+      : super(child) {
+    assert(_debugVerifyDuplicity(), '');
+    _timer = Timer(lifeTime, () {});
+  }
+
   /// The amount of time that will take to the cache to be considered invalid
   /// after a refresh.
   final Duration lifeTime;
   late Timer _timer;
-
-  TimeToLiveCachedValue._(CachedValue<CacheContentType> child, this.lifeTime)
-      : super(child) {
-    assert(_debugVerifyDuplicity());
-    _timer = Timer(lifeTime, () {});
-  }
 
   @override
   bool get isValid => super.isValid && _timer.isActive;
@@ -67,7 +67,7 @@ class TimeToLiveCachedValue<CacheContentType>
 
   bool _debugVerifyDuplicity() {
     assert(() {
-      bool verifyDuplicity(CachedValue child) {
+      bool verifyDuplicity(CachedValue<dynamic> child) {
         if (child is TimeToLiveCachedValue) {
           return false;
         }
@@ -78,8 +78,8 @@ class TimeToLiveCachedValue<CacheContentType>
       }
 
       return verifyDuplicity(child);
-    }(), """
-There is a declaration of a cached value time to live specified more than once""");
+    }(), '''
+There is a declaration of a cached value time to live specified more than once''');
     return true;
   }
 }

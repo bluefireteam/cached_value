@@ -1,6 +1,5 @@
+import 'package:cached_value/cached_value.dart';
 import 'package:meta/meta.dart';
-
-import '../cached_value.dart';
 
 /// A type of [CachedValue] that contains another.
 ///
@@ -16,11 +15,11 @@ import '../cached_value.dart';
 /// - Avoid and verify for conflict with other cache types.
 abstract class SingleChildCachedValue<CacheContentType>
     implements CachedValue<CacheContentType> {
-  /// A [CachedValue] in which this cache wraps.
-  final CachedValue<CacheContentType> child;
-
   /// Creates a cached value that wraps a [child]
   const SingleChildCachedValue(this.child);
+
+  /// A [CachedValue] in which this cache wraps.
+  final CachedValue<CacheContentType> child;
 
   @override
   @mustCallSuper

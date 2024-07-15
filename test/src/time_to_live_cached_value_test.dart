@@ -2,11 +2,11 @@ import 'package:cached_value/cached_value.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group("TimeToLiveCachedValue", () {
-    test("should wait not compute before lifetime", () async {
+  group('TimeToLiveCachedValue', () {
+    test('should wait not compute before lifetime', () async {
       var numberOfLifeProblems = 10;
       final lifeProblemsAMinuteAgo = CachedValue(() => numberOfLifeProblems)
-          .withTimeToLive(lifetime: Duration(seconds: 4));
+          .withTimeToLive(lifetime: const Duration(seconds: 4));
 
       final validAfterDeclaration = lifeProblemsAMinuteAgo.isValid;
       final valueAfterDeclaration = lifeProblemsAMinuteAgo.value;
@@ -16,7 +16,7 @@ void main() {
       final validAfterUpdate = lifeProblemsAMinuteAgo.isValid;
       final valueAfterUpdate = lifeProblemsAMinuteAgo.value;
 
-      await Future.delayed(Duration(seconds: 2));
+      await Future<void>.delayed(const Duration(seconds: 2));
 
       final validAfter2Seconds = lifeProblemsAMinuteAgo.isValid;
       final valueAfter2Seconds = lifeProblemsAMinuteAgo.value;
@@ -28,21 +28,21 @@ void main() {
       expect(validAfter2Seconds, true);
       expect(valueAfter2Seconds, 10);
     });
-    test("should recompute after lifetime", () async {
+    test('should recompute after lifetime', () async {
       var numberOfLifeProblems = 10;
       final lifeProblemsAMinuteAgo = CachedValue(() => numberOfLifeProblems)
-          .withTimeToLive(lifetime: Duration(seconds: 2));
+          .withTimeToLive(lifetime: const Duration(seconds: 2));
 
       numberOfLifeProblems = 150;
 
-      await Future.delayed(Duration(seconds: 3));
+      await Future<void>.delayed(const Duration(seconds: 3));
 
       final validAfter3Seconds = lifeProblemsAMinuteAgo.isValid;
       final valueAfter3Seconds = lifeProblemsAMinuteAgo.value;
 
       numberOfLifeProblems = 9750;
 
-      await Future.delayed(Duration(seconds: 3));
+      await Future<void>.delayed(const Duration(seconds: 3));
 
       final validAfter6Seconds = lifeProblemsAMinuteAgo.isValid;
       final valueAfter6Seconds = lifeProblemsAMinuteAgo.value;
@@ -52,14 +52,14 @@ void main() {
       expect(validAfter6Seconds, false);
       expect(valueAfter6Seconds, 9750);
     });
-    test("refresh should reset lifetime", () async {
+    test('refresh should reset lifetime', () async {
       var numberOfLifeProblems = 10;
       final lifeProblemsAMinuteAgo = CachedValue(() => numberOfLifeProblems)
-          .withTimeToLive(lifetime: Duration(seconds: 4));
+          .withTimeToLive(lifetime: const Duration(seconds: 4));
 
       numberOfLifeProblems = 150;
 
-      await Future.delayed(Duration(seconds: 2));
+      await Future<void>.delayed(const Duration(seconds: 2));
 
       // before lifetime ends, force refresh
       final validAfter2SecondsBeforeRefresh = lifeProblemsAMinuteAgo.isValid;
@@ -70,7 +70,7 @@ void main() {
 
       numberOfLifeProblems = 1750;
 
-      await Future.delayed(Duration(seconds: 2));
+      await Future<void>.delayed(const Duration(seconds: 2));
 
       final validAfter4Seconds = lifeProblemsAMinuteAgo.isValid;
       final valueAfter4Seconds = lifeProblemsAMinuteAgo.value;
@@ -84,28 +84,28 @@ void main() {
       expect(validAfter4Seconds, true);
       expect(valueAfter4Seconds, 150);
     });
-    test("prevent duplicated time to live", () {
+    test('prevent duplicated time to live', () {
       expect(
-        () => CachedValue(() => "lolo")
-            .withTimeToLive(lifetime: Duration(seconds: 1))
-            .withTimeToLive(lifetime: Duration(seconds: 1)),
+        () => CachedValue(() => 'lolo')
+            .withTimeToLive(lifetime: const Duration(seconds: 1))
+            .withTimeToLive(lifetime: const Duration(seconds: 1)),
         throwsA(
           predicate(
             (e) =>
                 e is AssertionError &&
                 e.message ==
-                    """
-There is a declaration of a cached value time to live specified more than once""",
+                    '''
+There is a declaration of a cached value time to live specified more than once''',
           ),
         ),
       );
     });
-    test("pile up with dependency", () async {
+    test('pile up with dependency', () async {
       var numberOfLifeProblems = 10;
       final realNumberOfLifeProblemsAMinuteAgo =
           CachedValue(() => numberOfLifeProblems * 2)
               .withDependency(() => numberOfLifeProblems)
-              .withTimeToLive(lifetime: Duration(seconds: 3));
+              .withTimeToLive(lifetime: const Duration(seconds: 3));
 
       final validAfterDeclaration = realNumberOfLifeProblemsAMinuteAgo.isValid;
       final valueAfterDeclaration = realNumberOfLifeProblemsAMinuteAgo.value;
@@ -115,7 +115,7 @@ There is a declaration of a cached value time to live specified more than once""
       final validAfterUpdate = realNumberOfLifeProblemsAMinuteAgo.isValid;
       final valueAfterUpdate = realNumberOfLifeProblemsAMinuteAgo.value;
 
-      await Future.delayed(Duration(seconds: 4));
+      await Future<void>.delayed(const Duration(seconds: 4));
 
       final validAfter2Seconds = realNumberOfLifeProblemsAMinuteAgo.isValid;
       final valueAfter2Seconds = realNumberOfLifeProblemsAMinuteAgo.value;
