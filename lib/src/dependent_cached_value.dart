@@ -100,6 +100,15 @@ extension DependentExtension<CacheContentType>
   DependentCachedValue<CacheContentType, DependencyType>
       withDependency<DependencyType>(
     ComputeCacheDependency<DependencyType> on,
-  ) =>
-          DependentCachedValue._(this, on);
+  ) {
+    DependencyType getDependency() {
+      final dependencyValue = on();
+      if (dependencyValue is Iterable && dependencyValue is! List) {
+        return dependencyValue.toList() as DependencyType;
+      }
+      return dependencyValue;
+    }
+
+    return DependentCachedValue._(this, getDependency);
+  }
 }

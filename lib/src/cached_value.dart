@@ -108,25 +108,4 @@ abstract class CachedValue<CacheContentType> {
   /// The returned value should be the new cache value.
   /// {@endtemplate}
   CacheContentType refresh();
-
-  /// Creates a [CachedValue] that is only manually invalidated.
-  ///
-  /// Use [new CachedValue] instead.
-  @Deprecated('Use the constructor instead')
-  static SimpleCachedValue<CacheContentType> simple<CacheContentType>(
-    ComputeCacheCallback<CacheContentType> callback,
-  ) {
-    return SimpleCachedValue<CacheContentType>(callback);
-  }
-
-  /// Creates a [CachedValue] that its validity is defined by a dependency.
-  ///
-  /// Use `CachedValue.withDependency` instead.
-  @Deprecated('Use "withDependency" instead')
-  static DependentCachedValue<A, B> dependent<A, B>({
-    required ComputeCacheDependency<B> on,
-    required ComputeCacheCallback<A> compute,
-  }) {
-    return CachedValue<A>(compute).withDependency<B>(on);
-  }
 }
