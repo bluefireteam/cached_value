@@ -95,6 +95,8 @@ final someCache = CachedValue(
   );
 ```
 
+
+
 ### 3. Adding time to live (TTL)
 
 A cache can be automatically marked as invalid some time after a refresh.
