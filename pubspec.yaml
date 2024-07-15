@@ -1,6 +1,6 @@
 name: cached_value
 description: A simple way to cache values that result from rather expensive operations.
-version: 0.2.0
+version: 1.0.0
 repository: https://github.com/bluefireteam/cached_value
 issue_tracker: https://github.com/bluefireteam/cached_value/issues
 homepage: https://github.com/bluefireteam/cached_value
