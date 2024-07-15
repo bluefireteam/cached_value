@@ -21,12 +21,12 @@ import 'package:cached_value/src/single_child_cached_value.dart';
 /// It can be created via `CachedValue.withTimeToLive`
 class TimeToLiveCachedValue<CacheContentType>
     extends SingleChildCachedValue<CacheContentType> {
-
   TimeToLiveCachedValue._(CachedValue<CacheContentType> child, this.lifeTime)
       : super(child) {
     assert(_debugVerifyDuplicity(), '');
     _timer = Timer(lifeTime, () {});
   }
+
   /// The amount of time that will take to the cache to be considered invalid
   /// after a refresh.
   final Duration lifeTime;
