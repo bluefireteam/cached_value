@@ -9,25 +9,22 @@ It is useful to cache values that:
  - Can be changed given known and unknown conditions;
  - Should not be computed on every access (like a getter);
 
+A `cached_value` is better used over imperative APIs, such as Flutter's render objects. See [Motivation](#motivation) for more.
+
 ## Installation
 
 Add to pubspec.yaml:
 ```yaml
-    dependencies:
-       cached_value: <most recent version>
+dart pub add cached_value
 ```
-
-Find the most recent version on [pub](https://pub.dev/packages/cached_value).
 
 ## Usage
 
-A cache can be created from a simple manually controlled cache and composed with automatic 
-functionalities. Such as dependencies and time to live.
+A cache can start as a simple manually controlled cache and then be enhanced with automatic functionalities such as dependencies and time-to-live (TTL).
+
+### 1.Creating a simple cached that is invaldiated manually
 
 
-### Creating a cache:
-
-A simple cache is only invalidated manually.
 
 ```dart
   int factorial(int n) {
@@ -62,28 +59,7 @@ the `refresh` method:
   print(factorialCache.value); // 12
 ```
 
-## Composing a cache
-
-A cache can be composed with more resources via a declarative API. By doing that, it is possible to 
-add TTL and dependency without diverging from the original behavior of a cache.
-
-Example:
-```dart
-  int factorial(int n) {
-    if (n < 0) throw ('Negative numbers are not allowed.');
-    return n <= 1 ? 1 : n * factorial(n - 1);
-  }
-  
-  int originalValue = 1;
-  final fancyFactorialCache = CachedValue(
-      () => factorial(originalValue),
-  ).withDependency(() => originalValue) // Add dependency
-  .withTimeToLive(lifetime: Duration(seconds: 4)); // Add TTL
-```
-
-You can even create your behavior yourself by extending `SingleChildCachedValue`.
-
-### Adding dependency
+### 2. Adding dependencies
 
 A dependent cache is marked as invalid if its dependency value has changed.
 
@@ -112,13 +88,16 @@ A dependent cache is marked as invalid if its dependency value has changed.
 The dependency callback is called on every value access. So it is recommended to keep it as declarative as possible.
 
 ```dart
-// Avoid this:
 final someCache = CachedValue(
   // ...
-).withDependency(() => someExpensiveOperation(originalValue));
+  ).withDependency(
+    () => someExpensiveOperation(originalValue), // ❌ Avoid this:
+  );
 ```
 
-### Adding time to live
+
+
+### 3. Adding time to live (TTL)
 
 A cache can be automatically marked as invalid some time after a refresh.
 

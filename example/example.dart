@@ -9,6 +9,7 @@ int factorial(int n) {
 
 void main() {
   withDependency();
+  withMultipleDependencies();
   withTimeToLive();
 }
 
@@ -24,11 +25,34 @@ void withDependency() {
 
   print(factorialCache.value); // 1
 
-  print(factorialCache.value); // 1 - not recomputes
+  print(factorialCache.value); // 1 - cached
 
   originalValue = 6;
 
   print(factorialCache.value); // 720
+}
+
+void withMultipleDependencies() {
+  print('with multiple dependencies');
+
+  var originalValue1 = 1;
+  var originalValue2 = 2;
+  final factorialCache = CachedValue(
+    () => factorial(originalValue1) + factorial(originalValue2),
+  ).withDependency(
+    () sync* {
+      yield originalValue1;
+      yield originalValue2;
+    },
+  );
+
+  print(factorialCache.value); // 3
+
+  print(factorialCache.value); // 3 - cached
+
+  originalValue2 = 6;
+
+  print(factorialCache.value); // 721
 }
 
 Future<void> withTimeToLive() async {
