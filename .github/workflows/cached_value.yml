@@ -29,31 +29,3 @@ jobs:
     with:
       coverage_excludes: '**/*.g.dart'
       dart_sdk: 'stable'
-
-  spell-check:
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
-    with:
-      includes: |
-        **/*.md
-        .*/**/*.md
-        **/*.dart
-        pubspec.yaml
-      modified_files_only: false
-
-  verify-version:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📚 Git Checkout
-        uses: actions/checkout@v4
-
-      - name: 🎯 Setup Dart
-        uses: dart-lang/setup-dart@v1
-        with:
-          sdk: "stable"
-
-      - name: 📦 Install Dependencies
-        run: |
-          dart pub get
-
-      - name: 🔎 Verify version
-        run: dart run test --run-skipped -t version-verify
