@@ -2,9 +2,8 @@ import 'package:cached_value/cached_value.dart';
 import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 
-
 class TestBed {
-  String name1 = 'Elon Musk'; 
+  String name1 = 'Elon Musk';
   String name2 = 'Jeff Bezos';
   late final marriedNameCache = CachedValue(
     () => '${name1.split(' ').first} ${name2.split(' ').last}',
