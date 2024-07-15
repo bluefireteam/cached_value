@@ -1,5 +1,4 @@
 import 'package:cached_value/cached_value.dart';
-import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 
 class TestBed {
