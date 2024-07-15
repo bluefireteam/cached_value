@@ -74,5 +74,4 @@ build/
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 
-
-.gitignore
+pubspec.lock
