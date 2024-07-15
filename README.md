@@ -9,25 +9,22 @@ It is useful to cache values that:
  - Can be changed given known and unknown conditions;
  - Should not be computed on every access (like a getter);
 
+A `cached_value` is better used over imperative APIs, such as Flutter's render objects. See [Motivation](#motivation) for more.
+
 ## Installation
 
 Add to pubspec.yaml:
 ```yaml
-    dependencies:
-       cached_value: <most recent version>
+dart pub add cached_value
 ```
-
-Find the most recent version on [pub](https://pub.dev/packages/cached_value).
 
 ## Usage
 
-A cache can be created from a simple manually controlled cache and composed with automatic 
-functionalities. Such as dependencies and time to live.
+A cache can start as a simple manually controlled cache and then be enhanced with automatic functionalities such as dependencies and time-to-live (TTL).
+
+### 1.Creating a simple cached that is invaldiated manually
 
 
-### Creating a cache:
-
-A simple cache is only invalidated manually.
 
 ```dart
   int factorial(int n) {
@@ -77,7 +74,8 @@ Example:
   int originalValue = 1;
   final fancyFactorialCache = CachedValue(
       () => factorial(originalValue),
-  ).withDependency(() => originalValue) // Add dependency
+  )
+  .withDependency(() => originalValue) // Add dependency
   .withTimeToLive(lifetime: Duration(seconds: 4)); // Add TTL
 ```
 
